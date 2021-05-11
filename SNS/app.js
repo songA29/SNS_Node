@@ -6,7 +6,9 @@ const session = require('express-session');
 const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
 
-dotenv.config();
+dotenv.config();//require한 다음 최대한 위에 적어주는게 좋다.
+//dotenv를 하는 순간 process env의 설정 값들이 들어가는데 선언한 이후부터 들어간다.
+//만약 이 선언문 위에 process.env.COOKIE_SECRET 이런게 있다면 dotenv 적용이 안된다.
 const pageRouter = require('./routes/page');
 
 const app = express();
