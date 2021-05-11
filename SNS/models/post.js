@@ -7,7 +7,7 @@ module.exports = class Post extends Sequelize.Model {
         type: Sequelize.STRING(140),
         allowNull: false,
       },
-      img: {
+      img: { //단 한개의 이미지만 올릴 수 있음.
         type: Sequelize.STRING(200),
         allowNull: true,
       },
@@ -24,7 +24,7 @@ module.exports = class Post extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Post.belongsTo(db.User);
-    db.Post.belongsToMany(db.Hashtag, { through: 'PostHashtag' });
+    db.Post.belongsTo(db.User); //Post:User = N:1
+    db.Post.belongsToMany(db.Hashtag, { through: 'PostHashtag' }); //Post:Hashtag = N:M, //foreignKey 안넣어주면 기본적으로 postId랑 hashtagId가 된다. through- 중간 테이블
   }
 };

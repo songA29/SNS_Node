@@ -1,53 +1,55 @@
-module.exports = (sequelize, DataTypes) => {
+const Sequelize = require('sequelize');
 
-    const User = sequelize.define("Users", {
-        email: {
-            type: DataTypes.STRING(100),
-            validate: {
-                isEmail: true,
+module.exports = class User extends Sequelize.Model { //공식문서를 따르는 형식
+    static init(sequelize) {
+        return super.init({
+            email: { //시퀄라이즈는 id 생략한다.
+                type: Sequelize.STRING(40),
+                allowNull: true,
+                unique: true, //빈 값이 있어도 unique하게 구분된다.
             },
-            allowNull: true,
-            unique: true,
-            comment: "이메일",
-        },
-        nick: {
-            type: DataTypes.STRING(15),
-            allowNull: false,
-            comment: "닉네임",
-        },
-        password: {
-            type: DataTypes.STRING(100),
-            allowNull: true,
-            comment: "비밀번호",
-        },
-        provider: {
-            type: DataTypes.STRING(10),
-            allowNull: false,
-            defaultValue: 'local',
-            comment: "로컬, sns 로그인",
-        },
-        snsId: {
-            type: DataTypes.STRING(30),
-            allowNull: true,
-            comment: "snsId",
-        },
-    }, {
-        sequelize,
-        charset: "utf8", // 한국어 설정
-        collate: "utf8_general_ci", // 한국어 설정
-        tableName: "Users", // 테이블 이름
-        modelName: "User",
-        underscored: false, //이 옵션이 true이면 column이름을 camalCase가 아닌 underscore방식으로 사용
-        timestamps: true, // createAt & updateAt 활성화
-        paranoid: true, // timestamps가 활성화 되어야 사용 가능 > deleteAt 옵션 on
-    });
+            nick: {
+                type: Sequelize.STRING(15),
+                allowNull: false,
+            },
+            password: {
+                type: Sequelize.STRING(100), //해시화하면 길어지기 때문에 100글자로 지정해놓은거
+                allowNull: true, //sns 로그인하는 경우에는 비밀번호가 없을 수 있다.
+            },
+            provider: {
+                type: Sequelize.STRING(10),
+                allowNull: false,
+                defaultValue: 'local', //local을 통해 로그인한거 / kakao, facebook 등등 가능
+            },
+            snsId: { //카카오, 네이버 등등으로 로그인하면 snsId라는걸 주는데 그걸 저장하고 있어야만 나중에
+                //로그인할 때 id처럼 활용할 수 있다.
+                type: Sequelize.STRING(30),
+                allowNull: true,
+            },
+        }, {//기타 옵션들
+            sequelize, //데이터베이스 커넥션
+            timestamps: true, //true - createdAt, updatedAt이 자동으로 기록된다.
+            underscored: false, //이 옵션이 true이면 column이름을 camalCase가 아닌 underscore방식으로 사용
+            modelName: 'User',
+            tableName: 'users',
+            paranoid: true, //paranoid - deletedAt이 자동으로 기록된다.
+            charset: 'utf8', //한국어 설정
+            collate: 'utf8_general_ci',// 한국어 설정
+        });
+    }
 
-    User.associate = models => {
-        /**
-         * Users안에 있는 "id값"을 "user_id라는 컬럼 이름"으로 UserInfo모델에 새로운 컬럼으로 추가한다. 1:1 일때
-         */
-        // Users.hasOne(models.UserInfo, {foreignKey: "user_id", sourceKey: 'id'});
-    };
-
-    return User;
+    static associate(db) {
+        db.User.hasMany(db.Post); // User:Post = 1:N
+        db.User.belongsToMany(db.User, { //사용자 테이블 간의 관계를 표현한거임.
+            foreignKey: 'followingId',
+            //foreignKey를 안넣어주면 userId와 userId가 돼서 헷갈리게 된다. 구분 짓기 위해 foreignKey 넣어준거.
+            as: 'Followers',//as에는 foreignKey와 반대되는 것을 넣어줘야됨. -> 그래야 나중에 followers들을 가져올 때 followingId를 보고 가져올 수 있다.
+            through: 'Follow', //Follow라는 중간 테이블을 만들어줌.
+        });
+        db.User.belongsToMany(db.User, {
+            foreignKey: 'followerId',
+            as: 'Followings', // 시퀄라이즈는 as 이름을 바탕으로 자동으로 addFollower, getFollwers, addFollowing, getFollowings 메서드를 생성
+            through: 'Follow',
+        });
+    }
 };

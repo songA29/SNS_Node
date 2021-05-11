@@ -10,6 +10,7 @@ dotenv.config();//require한 다음 최대한 위에 적어주는게 좋다.
 //dotenv를 하는 순간 process env의 설정 값들이 들어가는데 선언한 이후부터 들어간다.
 //만약 이 선언문 위에 process.env.COOKIE_SECRET 이런게 있다면 dotenv 적용이 안된다.
 const pageRouter = require('./routes/page');
+const {sequelize} = require('./models');
 
 const app = express();
 app.set('port', process.env.PORT || 8001);
@@ -18,6 +19,19 @@ nunjucks.configure('views', {
   express: app,
   watch: true,
 });
+
+sequelize.sync({ force: true }) //sequelize.sync()가 테이블 생성해준다.
+    //테이블 정의한거 수정했다고(ex - hashtag.js 수정했다고 db의 테이블이 바로 바뀌지 않음) 테이블이 자동으로 수정되는게 아님!
+    //두 가지 방법 있음 - 첫번째 force: true - 테이블이 지워졌다가 다시 생성됨(대신 데이터가 지워지는거니까 조심해야한다.)
+    //alter : true - 데이터는 유지하고 테이블 컬럼 바뀐걸 반영하고 싶을 때 사용(컬럼이랑 기존 데이터들이랑 안맞아서 에러 나는 경우가 많다.
+    //예를 들어 allowNull이 false인 컬럼을 추가했을 때 기존 데이터들은 그 컬럼에 해당하는 데이터가 없어서 에러 발생함)
+    //일단 force: false로 해놓고 수정사항 있으면 true로 변경사항 반영 / 실무에서는 force : true 절대 쓰면 안된다. only 개발용
+    .then(() => {//promise기 때문에 .then(), .catch() 붙여주면 좋음.
+      console.log('데이터베이스 연결 성공');
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 
 app.use(morgan('dev'));
 //app.use(express.static(__dirname)); // Current directory is root
