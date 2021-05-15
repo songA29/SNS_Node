@@ -5,12 +5,14 @@ const path = require('path');
 const session = require('express-session');
 const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
+const passport = require('passport');
 
 dotenv.config();//require한 다음 최대한 위에 적어주는게 좋다.
 //dotenv를 하는 순간 process env의 설정 값들이 들어가는데 선언한 이후부터 들어간다.
 //만약 이 선언문 위에 process.env.COOKIE_SECRET 이런게 있다면 dotenv 적용이 안된다.
 const pageRouter = require('./routes/page');
 const {sequelize} = require('./models');
+const passportConfig = require('./passport');
 
 const app = express();
 app.set('port', process.env.PORT || 8001);
@@ -49,7 +51,14 @@ app.use(session({
   },
 }));
 
+// 라우터 가기 전에, session보다 아래에 있어야 된다.
+// 로그인 이후 요청부터 passport.session()이 실행될 때 index.js의 deserializeUser()가 실행된다.
+app.use(passport.initialize());
+app.use(passport.session());//req.session 객체에 passport 정보를 저장
+
+
 app.use('/', pageRouter);
+app.use('/auth', authRouter);
 
 app.use((req, res, next) => { //모든 라우터들 뒤에 나오니깐 404처리 미들웨어
   const error =  new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
