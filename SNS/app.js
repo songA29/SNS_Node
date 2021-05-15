@@ -20,7 +20,7 @@ nunjucks.configure('views', {
   watch: true,
 });
 
-sequelize.sync({ force: true }) //sequelize.sync()가 테이블 생성해준다.
+sequelize.sync({ force: false }) //sequelize.sync()가 테이블 생성해준다.
     //테이블 정의한거 수정했다고(ex - hashtag.js 수정했다고 db의 테이블이 바로 바뀌지 않음) 테이블이 자동으로 수정되는게 아님!
     //두 가지 방법 있음 - 첫번째 force: true - 테이블이 지워졌다가 다시 생성됨(대신 데이터가 지워지는거니까 조심해야한다.)
     //alter : true - 데이터는 유지하고 테이블 컬럼 바뀐걸 반영하고 싶을 때 사용(컬럼이랑 기존 데이터들이랑 안맞아서 에러 나는 경우가 많다.
