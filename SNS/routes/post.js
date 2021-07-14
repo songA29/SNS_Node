@@ -8,7 +8,7 @@ const { isLoggedIn } = require('./middlewares');
 
 const router = express.Router();
 
-try { //uploads 폴더에 파일들을 업로드 하는데 없으면 안되니깐 없다면 생성하게 하는 코드임.
+try { //uploads 폴더에 파일들을 업로드 하는데 없으면 안되니깐 없다면 생성하게 하는 코드
     fs.readdirSync('uploads');
 } catch (error) {
     console.error('uploads 폴더가 없어 uploads 폴더를 생성합니다.');
