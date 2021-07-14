@@ -22,7 +22,7 @@ const upload = multer({ //업로드 미들웨어
         },
         filename(req, file, cb) { //저장 파일명
             const ext = path.extname(file.originalname);
-            cb(null, path.basename(file.originalname, ext) + Date.now() + ext); //파일명은 원래 파일명에 날짜를 더해서 만들어주겠다.(중복 방지)
+            cb(null, path.basename(file.originalname, ext) + Date.now() + ext); //파일명은 원래 파일명에 날짜를 더해서 만들어주겠다.
         },
     }),
     limits: { fileSize: 5 * 1024 * 1024 }, //파일 용량 제한
