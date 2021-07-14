@@ -16,7 +16,7 @@ try { //uploads 폴더에 파일들을 업로드 하는데 없으면 안되니�
 }
 
 const upload = multer({ //업로드 미들웨어
-    storage: multer.diskStorage({ //diskStorage는 이미지를 서버 디스크에 저장한다는거
+    storage: multer.diskStorage({ //diskStorage는 이미지를 서버 디스크에 저장
         destination(req, file, cb) { //저장 경로
             cb(null, 'uploads/'); //uploads 폴더에 img를 업로드
         },
