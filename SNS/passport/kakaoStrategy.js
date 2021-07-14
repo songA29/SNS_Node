@@ -18,7 +18,7 @@ module.exports = () => {
                 done(null, exUser);
             } else { //없으면 회원가입 시키기
                 const newUser = await User.create({
-                    email: profile._json && profile._json.kakao_account_email, //이메일은 profile._json.kakao_~에 있음
+                    email: profile._json && profile._json.kakao_account_email, //이메일은 profile._json.kakao에 있음
                     nick: profile.displayName,
                     snsId: profile.id,
                     provider: 'kakao',
