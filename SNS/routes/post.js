@@ -33,7 +33,7 @@ const upload = multer({ //업로드 미들웨어
 router.post('/img', isLoggedIn,
     upload.single('img'), (req, res) => { //요청 본문의 img에 담긴 이미지 하나를 읽어 설정대로 저장하는 미들웨어
 
-        //로그인한 사람이 post /img 요청을 보내면서 form에서 img라는 키로 이미지를 업로드해야됨. key가 일치해야된다.
+        //로그인한 사람이 post /img 요청을 보내면서 form에서 img라는 키로 이미지를 업로드해야되며 key가 일치해야된다.
         console.log(req.file);
         res.json({ url: `/img/${req.file.filename}` }); //업로드 완료하면 이 파일을 요청할 수 있는 url을 프론트로 돌려보내줌 / 실제 파일은 uploads에 있는데 요청 주소는 img/임 -> express static이 이 역할 수행
     });
