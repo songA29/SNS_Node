@@ -12,7 +12,7 @@ module.exports = () => {
         console.log('kakao profile', profile);
         try {
             const exUser = await User.findOne({
-                where: { snsId: profile.id, provider: 'kakao' }, //카카오로 이미 가입한 사람이 있나 찾아보는거
+                where: { snsId: profile.id, provider: 'kakao' }, //카카오로 이미 가입한 사람이 있나 찾아봄
             });
             if (exUser) { //가입한 사람이 로그인 있으면 성공
                 done(null, exUser);
