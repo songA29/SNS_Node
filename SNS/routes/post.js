@@ -18,14 +18,14 @@ try { //uploads 폴더에 파일들을 업로드 하는데 없으면 안되니�
 const upload = multer({ //업로드 미들웨어
     storage: multer.diskStorage({ //diskStorage는 이미지를 서버 디스크에 저장한다는거
         destination(req, file, cb) { //저장 경로
-            cb(null, 'uploads/'); //uploads 폴더에 img를 업로드 하겠다.
+            cb(null, 'uploads/'); //uploads 폴더에 img를 업로드
         },
         filename(req, file, cb) { //저장 파일명
             const ext = path.extname(file.originalname);
             cb(null, path.basename(file.originalname, ext) + Date.now() + ext); //파일명은 원래 파일명에 날짜를 더해서 만들어주겠다.
         },
     }),
-    limits: { fileSize: 5 * 1024 * 1024 }, 
+    limits: { fileSize: 5 * 1024 * 1024 },
 });
 
 
